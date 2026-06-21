@@ -102,7 +102,7 @@
             this.ButtonCancel.Name = "ButtonCancel";
             this.ButtonCancel.Size = new System.Drawing.Size(188, 71);
             this.ButtonCancel.TabIndex = 7;
-            this.ButtonCancel.Text = "Отмена";
+            this.ButtonCancel.Text = "Назад";
             this.ButtonCancel.UseVisualStyleBackColor = true;
             this.ButtonCancel.Click += new System.EventHandler(this.ButtonCancel_Click);
             // 
@@ -111,6 +111,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(727, 451);
+            this.ControlBox = false;
             this.Controls.Add(this.ButtonCancel);
             this.Controls.Add(this.ButtonRegister);
             this.Controls.Add(this.labelRepeatNewPass);

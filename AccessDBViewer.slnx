@@ -1,3 +1,4 @@
 <Solution>
+  <Project Path="../AccessDBViewerTests/AccessDBViewerTests.csproj" Id="c6247819-45ff-466f-baf6-3736e60e96a3" />
   <Project Path="AccessDBViewer.csproj" Id="a6784dc8-4ece-400d-8f45-4b128597f71e" />
 </Solution>

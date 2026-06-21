@@ -7,29 +7,24 @@ namespace AccessDBViewer
     {
         private readonly Authentication authentication;
 
-        private string loggedInUser;
+        private bool loginSuccess = false;
 
         public AuthForm(Authentication authentication)
         {
             InitializeComponent();
-
+            FormClosing += AuthForm_FormClosing;
             this.authentication = authentication;
-        }
-
-        public string GetLoggedInUser()
-        {
-            return loggedInUser;
         }
 
         private void AuthForm_Load(object sender, EventArgs e)
         {
-            TextBoxLogin.Focus();
+             TextBoxLogin.Focus();
         }
 
         private void ButtonLogin_Click(object sender, EventArgs e)
         {
-            string username = TextBoxLogin.Text;
-            string password = TextBoxPassword.Text;
+            string username = TextBoxLogin.Text.Trim();
+            string password = TextBoxPassword.Text.Trim();
 
             if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
             {
@@ -41,9 +36,9 @@ namespace AccessDBViewer
 
             if (success)
             {
-                loggedInUser = username;
+                loginSuccess = true;
                 DialogResult = DialogResult.OK;
-                Close();
+                Hide();
             }
             else
             {
@@ -64,6 +59,19 @@ namespace AccessDBViewer
                 DB.CloseConnect();
             }
             Application.Exit();
+        }
+
+        private void AuthForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (!loginSuccess)
+            {
+                if (DB.MyConnect != null)
+                {
+                    DB.CloseConnect();
+                }
+
+                Application.Exit();
+            }
         }
     }
 }

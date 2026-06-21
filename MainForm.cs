@@ -15,6 +15,7 @@ namespace AccessDBViewer
 
             dataGridViewTables.CellValidating += DataGridViewTables_CellValidating;
             tabControlMain.SelectedIndexChanged += TabControlMain_SelectedIndexChanged;
+            FormClosing += MainForm_FormClosing;
         }
 
         private void DataGridViewTables_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)
@@ -254,7 +255,11 @@ namespace AccessDBViewer
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            DB.CloseConnect();
+            if (DB.MyConnect != null)
+            {
+                DB.CloseConnect();
+            }
+            Application.Exit();
         }
 
         private void ShowTableControls()

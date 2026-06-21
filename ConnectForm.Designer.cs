@@ -28,18 +28,18 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.txtDatabasePath = new System.Windows.Forms.TextBox();
+            this.DatabasePath = new System.Windows.Forms.TextBox();
             this.ButtonBrowse = new System.Windows.Forms.Button();
             this.ButtonConnect = new System.Windows.Forms.Button();
             this.ButtonExit = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
-            // txtDatabasePath
+            // DatabasePath
             // 
-            this.txtDatabasePath.Location = new System.Drawing.Point(94, 64);
-            this.txtDatabasePath.Name = "txtDatabasePath";
-            this.txtDatabasePath.Size = new System.Drawing.Size(417, 22);
-            this.txtDatabasePath.TabIndex = 0;
+            this.DatabasePath.Location = new System.Drawing.Point(94, 64);
+            this.DatabasePath.Name = "DatabasePath";
+            this.DatabasePath.Size = new System.Drawing.Size(417, 22);
+            this.DatabasePath.TabIndex = 0;
             // 
             // ButtonBrowse
             // 
@@ -76,10 +76,11 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(599, 423);
+            this.ControlBox = false;
             this.Controls.Add(this.ButtonExit);
             this.Controls.Add(this.ButtonConnect);
             this.Controls.Add(this.ButtonBrowse);
-            this.Controls.Add(this.txtDatabasePath);
+            this.Controls.Add(this.DatabasePath);
             this.Name = "ConnectForm";
             this.Text = "ConnectForm";
             this.Load += new System.EventHandler(this.ConnectForm_Load);
@@ -90,7 +91,7 @@
 
         #endregion
 
-        private System.Windows.Forms.TextBox txtDatabasePath;
+        private System.Windows.Forms.TextBox DatabasePath;
         private System.Windows.Forms.Button ButtonBrowse;
         private System.Windows.Forms.Button ButtonConnect;
         private System.Windows.Forms.Button ButtonExit;

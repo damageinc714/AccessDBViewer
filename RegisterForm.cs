@@ -7,10 +7,10 @@ namespace AccessDBViewer
     {
         private readonly Authentication authentication;
 
-        public RegisterForm(Authentication _authentication)
+        public RegisterForm(Authentication authentication)
         {
             InitializeComponent();
-            authentication = _authentication ?? throw new ArgumentNullException(nameof(_authentication));
+            this.authentication = authentication;
         }
 
         private void RegisterForm_Load(object sender, EventArgs e)
@@ -35,18 +35,12 @@ namespace AccessDBViewer
             if (password != confirmPassword)
             {
                 MessageBox.Show("Пароли не совпадают.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                textBoxNewPass.Clear();
-                textBoxRepeatNewPass.Clear();
-                textBoxNewPass.Focus();
                 return;
             }
 
             if (password.Length < 6)
             {
                 MessageBox.Show("Пароль должен содержать не менее 6 символов.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                textBoxNewPass.Clear();
-                textBoxRepeatNewPass.Clear();
-                textBoxNewPass.Focus();
                 return;
             }
 
@@ -59,10 +53,6 @@ namespace AccessDBViewer
             else
             {
                 MessageBox.Show("Ошибка при регистрации. Возможно, пользователь с таким именем уже существует.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                textBoxNewLogin.Clear();
-                textBoxNewPass.Clear();
-                textBoxRepeatNewPass.Clear();
-                textBoxNewLogin.Focus();
             }
         }
 

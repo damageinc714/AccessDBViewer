@@ -256,6 +256,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(847, 545);
+            this.ControlBox = false;
             this.Controls.Add(this.ButtonReport);
             this.Controls.Add(this.textBoxSql);
             this.Controls.Add(this.ButtonCreateQuery);

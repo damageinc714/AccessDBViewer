@@ -11,13 +11,9 @@ namespace AccessDBViewer
         private OpenFileDialog openFileDialog;
         private string connectionString;
 
-    public ConnectForm()
+        public ConnectForm()
         {
             InitializeComponent();
-
-            openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "Access Database (*.accdb)|*.accdb";
-            openFileDialog.Title = "Выберите базу данных Access";
         }
 
         private void ConnectForm_Load(object sender, EventArgs e)
@@ -27,22 +23,33 @@ namespace AccessDBViewer
 
         private void ButtonBrowse_Click(object sender, EventArgs e)
         {
+            openFileDialog = new OpenFileDialog
+            {
+                Filter = "Access Database (*.accdb)|*.accdb",
+                Title = "Выберите базу данных Access"
+            };
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
-                txtDatabasePath.Text = openFileDialog.FileName;
+                DatabasePath.Text = openFileDialog.FileName;
             }
         }
 
         private void ButtonConnect_Click(object sender, EventArgs e)
         {
             try
-            {
-                if (string.IsNullOrWhiteSpace(txtDatabasePath.Text))
+            {   
+                if (!DatabasePath.Text.EndsWith(".accdb"))
                 {
-                    MessageBox.Show("Выберите файл базы данных.");
+                    MessageBox.Show("Выберите файл базы данных.", "Не выбран файл", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
 
+                if (!DatabasePath.Text.EndsWith("Ресурсы_Таблицы.accdb"))
+                {
+                    MessageBox.Show("Невозможно произвести работу с этим файлом.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+                //проверка на установку драйвера
                 bool providerInstalled = new OleDbEnumerator()
                     .GetElements().AsEnumerable()
                     .Any(x => x.Field<string>("SOURCES_NAME") == "Microsoft.ACE.OLEDB.12.0");
@@ -52,8 +59,8 @@ namespace AccessDBViewer
                     MessageBox.Show("Не установлен драйвер Microsoft Access Database Engine.");
                     return;
                 }
-
-                connectionString = "Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + txtDatabasePath.Text;
+                //проверка подключения и передача строки подключения в класс DB
+                connectionString = "Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + DatabasePath.Text;
 
                 using (OleDbConnection connection = new OleDbConnection(connectionString))
                 {
@@ -62,8 +69,8 @@ namespace AccessDBViewer
 
                 DB.connectString = connectionString;
 
-                MessageBox.Show("Подключение выполнено успешно.");
-
+                MessageBox.Show("Подключение выполнено успешно.", "Успех", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                //открытие форм по цепочке
                 Authentication authentication = new Authentication(connectionString);
                 AuthForm authForm = new AuthForm(authentication);
 
@@ -72,14 +79,7 @@ namespace AccessDBViewer
                 if (authForm.ShowDialog() == DialogResult.OK)
                 {
                     MainForm mainForm = new MainForm();
-
-                    mainForm.ShowDialog();
-
-                    Close();
-                }
-                else
-                {
-                    Show();
+                    mainForm.Show();
                 }
             }
             catch (Exception ex)

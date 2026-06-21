@@ -13,21 +13,16 @@ namespace AccessDBViewer
         {
             this.connectionString = connectionString;
         }
-
+        //метод аутентификации пользователя
         public bool AuthenticateUser(string username, string password)
         {
             try
             {
                 string storedHashedPassword = GetStoredHashedPassword(username);
 
-                if (string.IsNullOrEmpty(storedHashedPassword))
-                {
-                    return false;
-                }
-
                 string hashedPassword = HashPassword(password);
-
-                return string.Equals(hashedPassword, storedHashedPassword, StringComparison.OrdinalIgnoreCase);
+                //сравниваенм только что введённый пароль и пароль в базе
+                return hashedPassword == storedHashedPassword;
             }
             catch (Exception ex)
             {
@@ -35,7 +30,7 @@ namespace AccessDBViewer
                 return false;
             }
         }
-
+        //метод получения хэшированного пароля
         private string GetStoredHashedPassword(string username)
         {
             string hashedPassword = null;
@@ -49,10 +44,10 @@ namespace AccessDBViewer
                     command.Parameters.AddWithValue("@Username", username);
 
                     connection.Open();
-
+                    //возвращаем первую строку и столбец результата
                     object result = command.ExecuteScalar();
 
-                    if (result != null && result != DBNull.Value)
+                    if (result != null && result != DBNull.Value)//обьекта либо нет в таблице либо значение в бд = NULL
                     {
                         hashedPassword = result.ToString();
                     }
@@ -60,8 +55,9 @@ namespace AccessDBViewer
             }
 
             return hashedPassword;
-        }
+        }       
 
+        //метод хэшированния пароля
         private static string HashPassword(string password)
         {
             byte[] passwordBytes = Encoding.UTF8.GetBytes(password);
@@ -72,7 +68,8 @@ namespace AccessDBViewer
                 return BitConverter.ToString(hashBytes).Replace("-", "").ToLower();
             }
         }
-
+        
+        //проверка существует ли пользователь в таблице
         private bool UserExists(string username)
         {
             string query = "SELECT COUNT(*) FROM Users WHERE Username = ?";
@@ -91,7 +88,7 @@ namespace AccessDBViewer
                 }
             }
         }
-
+        //метод регистрации
         public bool RegisterUser(string username, string password)
         {
             if (UserExists(username))
@@ -111,7 +108,7 @@ namespace AccessDBViewer
                     {
                         command.Parameters.AddWithValue("@Username", username);
 
-                        command.Parameters.AddWithValue("@PasswordHash",hashedPassword);
+                        command.Parameters.AddWithValue("@PasswordHash", hashedPassword);
 
                         connection.Open();
 
