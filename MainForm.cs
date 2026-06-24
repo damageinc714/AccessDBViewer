@@ -17,19 +17,15 @@ namespace AccessDBViewer
             tabControlMain.SelectedIndexChanged += TabControlMain_SelectedIndexChanged;
             FormClosing += MainForm_FormClosing;
         }
-
+        //проверки ячеек в DataGridView
         private void DataGridViewTables_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)
         {
-            if (comboBoxTables.SelectedItem == null)
-            {
-                return;
-            }
-
+            //по умолчания object, так что переводим
             string table = comboBoxTables.SelectedItem.ToString();
 
             string columnName = dataGridViewTables.Columns[e.ColumnIndex].Name;
 
-            string value =e.FormattedValue.ToString();
+            string value = e.FormattedValue.ToString();
 
             int number;
 
@@ -39,7 +35,7 @@ namespace AccessDBViewer
             {
                 if (columnName == "СтоимостьЕдиницы")
                 {
-                    if (!decimal.TryParse(value, out decimal d))
+                    if (!decimal.TryParse(value, out decimal _))
                     {
                         MessageBox.Show("Стоимость должна быть числом.");
                         e.Cancel = true;
@@ -71,7 +67,7 @@ namespace AccessDBViewer
             {
                 if (columnName == "Потреблено")
                 {
-                    if (!decimal.TryParse(value, out decimal d))
+                    if (!int.TryParse(value, out int _))
                     {
                         MessageBox.Show("Потреблено должно быть числом.");
                         e.Cancel = true;
@@ -80,7 +76,7 @@ namespace AccessDBViewer
 
                 if (columnName == "ДатаНачалаПотребления" || columnName == "ДатаОкончанияПотребления")
                 {
-                    if (!DateTime.TryParse(value, out date))
+                    if (!DateTime.TryParse(value, out _))
                     {
                         MessageBox.Show("Дата должна быть в формате дд.мм.гггг.");
                         e.Cancel = true;
@@ -143,8 +139,6 @@ namespace AccessDBViewer
                 comboBoxTables.Items.Add("Ресурс");
                 comboBoxTables.Items.Add("Потребление");
 
-                comboBoxTables.SelectedIndex = 0;
-
                 ShowTableControls();
 
                 dataGridViewTables.AllowUserToAddRows = false;
@@ -156,7 +150,7 @@ namespace AccessDBViewer
                 MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-
+       //кнопка открытия таблицы
         private void ButtonOpen_Click(object sender, EventArgs e)
         {
             if (comboBoxTables.SelectedItem == null)
@@ -168,16 +162,12 @@ namespace AccessDBViewer
             string table = comboBoxTables.SelectedItem.ToString();
              
             DB.OpenTable(table);
-
+            //сортировка по кодам
             DB.dt.DefaultView.Sort = DB.dt.Columns[0].ColumnName + " ASC";
 
             dataGridViewTables.DataSource = DB.dt.DefaultView;
 
             dataGridViewTables.Columns[0].ReadOnly = true;
-
-            bindingSource = new BindingSource();
-
-            bindingSource.DataSource = dataGridViewTables.DataSource;
         }
 
         private void ButtonAdd_Click(object sender, EventArgs e)
@@ -211,10 +201,7 @@ namespace AccessDBViewer
             {
                 foreach (DataGridViewRow row in dataGridViewTables.SelectedRows)
                 {
-                    if (!row.IsNewRow)
-                    {
-                        dataGridViewTables.Rows.Remove(row);
-                    }
+                    dataGridViewTables.Rows.Remove(row);
                 }
             }
         }
@@ -233,7 +220,6 @@ namespace AccessDBViewer
                 try
                 {
                     DB.SaveData();
-
                     MessageBox.Show("Изменения сохранены.", "Успех", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 catch (Exception ex)
@@ -317,16 +303,11 @@ namespace AccessDBViewer
         {
             string resourceName = Microsoft.VisualBasic.Interaction.InputBox("Введите название ресурса:", "Точное попадание");
 
-            if (string.IsNullOrWhiteSpace(resourceName))
-            {
-                return;
-            }
-
             string sql =
             "SELECT Клиент.[ФИОКлиента], Ресурс.[НаименованиеРесурса], Потребление.[ДатаНачалаПотребления], Потребление.[ДатаОкончанияПотребления], Потребление.Потреблено " +
             "FROM (Потребление INNER JOIN Ресурс ON Потребление.Ресурс = Ресурс.[КодРесурса]) " +
             "INNER JOIN Клиент ON Потребление.Клиент = Клиент.[КодКлиента] " +
-            "WHERE Ресурс.[НаименованиеРесурса] = '" + resourceName.Replace("'", "''") + "'";
+            "WHERE Ресурс.[НаименованиеРесурса] = '" + resourceName + "'";
 
             DB.CreateQuery(sql);
             dataGridViewQuery.DataSource = DB.ds.Tables[0];

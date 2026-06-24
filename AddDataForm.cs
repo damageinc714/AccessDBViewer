@@ -36,21 +36,23 @@ namespace AccessDBViewer
                     continue;
                 }
 
-                Label label = new Label();
-
-                label.Text = columnName;
-                label.Left = 20;
-                label.Top = top + 5;
-                label.Width = 180;
+                Label label = new Label
+                {
+                    Text = columnName,
+                    Left = 20,
+                    Top = top + 5,
+                    Width = 180
+                };
 
                 Controls.Add(label);
 
-                TextBox textBox = new TextBox();
-
-                textBox.Name = "txt" + columnName;
-                textBox.Left = 220;
-                textBox.Top = top;
-                textBox.Width = 200;
+                TextBox textBox = new TextBox
+                {
+                    Name = "txt" + columnName,
+                    Left = 220,
+                    Top = top,
+                    Width = 200
+                };
 
                 Controls.Add(textBox);
 
@@ -78,7 +80,7 @@ namespace AccessDBViewer
                 Width = 90,
                 Height = 25
             };
-            buttonCancel.Click += (s, e) => Close();
+            buttonCancel.Click += ButtonCancel_Click;
 
             Controls.Add(buttonCancel);
 
@@ -86,13 +88,18 @@ namespace AccessDBViewer
             Width = 500;
         }
 
+        private void ButtonCancel_Click(object sender, EventArgs e)
+                {
+                    Close();
+                }   
+
         private void ButtonSave_Click(object sender, EventArgs e)
         {
             try
             {
                 ValidateRelations();
 
-                DataTable schema = DB.MyConnect.GetSchema("Columns",new string[] {null,null,tableName,null});
+                DataTable schema = DB.MyConnect.GetSchema("Columns", new string[] {null,null,tableName,null});
 
                 string fields = "";
                 string values = "";
@@ -158,7 +165,7 @@ namespace AccessDBViewer
 
                 TextBox txtPrice = (TextBox)Controls["txtСтоимостьЕдиницы"];
 
-                if (!decimal.TryParse(txtPrice.Text, out decimal d))
+                if (!decimal.TryParse(txtPrice.Text, out decimal _))
                 {
                     throw new Exception("Стоимость единицы должна быть числом.");
                 }
@@ -190,7 +197,7 @@ namespace AccessDBViewer
 
                 TextBox txtConsumed = (TextBox)Controls["txtПотреблено"];
 
-                if (!decimal.TryParse(txtConsumed.Text, out decimal d))
+                if (!decimal.TryParse(txtConsumed.Text, out decimal _))
                 {
                     throw new Exception("Потреблено должно быть числом.");
                 }

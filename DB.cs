@@ -19,7 +19,7 @@ namespace AccessDBViewer
         public static DataSet ds;
 
         public static DataTable dt;
-
+        //метод открытия соединения
         public static void OpenConnect()
         {
             if (MyConnect == null)
@@ -32,7 +32,7 @@ namespace AccessDBViewer
                 MyConnect.Open();
             }
         }
-
+        //метод закрытия соединения
         public static void CloseConnect()
         {
             if (MyConnect != null && MyConnect.State == ConnectionState.Open)
@@ -40,7 +40,7 @@ namespace AccessDBViewer
                 MyConnect.Close();
             }
         }
-
+        
         public static void OpenTable(string tableName)
         {
             dataAdapter = new OleDbDataAdapter("SELECT * FROM [" + tableName + "]", MyConnect);
@@ -61,11 +61,9 @@ namespace AccessDBViewer
         }
 
         public static void SaveData()
-        {
-            if (ds != null && ds.Tables.Count > 0)
-            {
-                dataAdapter.Update(ds.Tables[0]);
-            }
+        {   
+            dataAdapter.Update(ds.Tables[0]);
+            
         }
 
         public static void CreateQuery(string command)
@@ -74,37 +72,31 @@ namespace AccessDBViewer
             ds = new DataSet();
             dataAdapter.Fill(ds);
         }
-
+        //метод генрации отчёта
         public static void WriteReport(DataTable DT)
         {
             Word.Document wordDocument;
 
-            var wordApp = new Word.Application();
+            var wordApp = new Word.Application
+            {
+                Caption = "Отчет",
+                Visible = true
+            };
 
-            wordApp.Caption = "Отчет";
-            wordApp.Visible = true;
-
-            object template = Type.Missing;
-            object newTemplate = false;
-            object documentType = Word.WdNewDocumentType.wdNewBlankDocument;
-            object visible = true;
-
-            wordDocument = wordApp.Documents.Add(ref template, ref newTemplate, ref documentType, ref visible);
-
+            wordDocument = wordApp.Documents.Add();
+            //начальные диапазоны для вставки данных
             object start = 0;
             object end = 0;
+            
+            Word.Range wordRange = wordDocument.Range(ref start, ref end);//сначала дата
 
-            Word.Range wordRange = wordDocument.Range(ref start, ref end);
+            wordRange.Text = DateTime.Now.ToString();
 
-            wordRange.Text = DateTime.Today.ToString();
+            Word.Range tableRange = wordDocument.Range(ref start, ref end);//затем сама таблица
 
-            Word.Range tableRange = wordDocument.Range(ref start, ref end);
+            object autoFitBehavior = Word.WdAutoFitBehavior.wdAutoFitWindow;//автоматически растягивать таблицу по ширине страницы.
 
-            object defaultTableBehavior = Word.WdDefaultTableBehavior.wdWord9TableBehavior;
-
-            object autoFitBehavior = Word.WdAutoFitBehavior.wdAutoFitWindow;
-
-            Word.Table wordTable = wordDocument.Tables.Add(tableRange, DT.Rows.Count + 1, DT.Columns.Count, ref defaultTableBehavior, ref autoFitBehavior);
+            Word.Table wordTable = wordDocument.Tables.Add(tableRange, DT.Rows.Count + 1, DT.Columns.Count, ref autoFitBehavior);
 
             Word.Range cellRange;
 
