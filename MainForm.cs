@@ -7,8 +7,6 @@ namespace AccessDBViewer
 {
     public partial class MainForm : Form
     {
-        private BindingSource bindingSource;
-
         public MainForm()
         {
             InitializeComponent();
@@ -28,8 +26,6 @@ namespace AccessDBViewer
             string value = e.FormattedValue.ToString();
 
             int number;
-
-            DateTime date;
 
             if (table == "Ресурс")
             {
@@ -127,10 +123,9 @@ namespace AccessDBViewer
 
         private void MainForm_Load(object sender,EventArgs e)
         {
-            try
+                try
             {
                 DB.OpenConnect();
-                DataTable schema = DB.MyConnect.GetSchema("Tables");
 
                 comboBoxTables.Items.Clear();
 
